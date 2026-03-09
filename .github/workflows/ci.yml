@@ -2,7 +2,8 @@ name: CI - Test, Build and Push Docker Image
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "main"
 
 env:
   IMAGE_NAME: flask-auth-devops-portfolio
@@ -38,10 +39,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push image
-  uses: docker/build-push-action@v6
-  with:
-    context: .
-    push: true
-    tags: |
-      ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-      ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
