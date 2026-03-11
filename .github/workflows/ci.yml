@@ -1,4 +1,4 @@
-name: CI - Test, Build and Push Docker Image
+name: CI - Test, Build, Push and Deploy to Cloud Run
 
 on:
   push:
@@ -7,9 +7,11 @@ on:
 
 env:
   IMAGE_NAME: flask-auth-devops-portfolio
+  GCP_PROJECT_ID: flask-cloud-run-demo-489719
+  GCP_REGION: europe-west2
 
 jobs:
-  test-build-push:
+  test-build-push-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -46,3 +48,26 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform init
+        working-directory: terraform
+        run: terraform init
+
+      - name: Terraform apply
+        working-directory: terraform
+        run: |
+          terraform apply -auto-approve \
+            -var="project_id=${{ env.GCP_PROJECT_ID }}" \
+            -var="region=${{ env.GCP_REGION }}" \
+            -var="image=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"

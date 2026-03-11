@@ -1,0 +1,15 @@
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/crash.log
+
+# Keep lock file
+!terraform/.terraform.lock.hcl
+
+# Python
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
