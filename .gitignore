@@ -1,18 +1,17 @@
+cat > .gitignore <<'EOF'
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/crash.log
+
+# Keep lock file
+!terraform/.terraform.lock.hcl
+
 # Python
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-
-# Virtual environment
-.venv/
-venv/
-
-# Environment files
-.env
 
 # VS Code
 .vscode/
-
-# OS
-.DS_Store
+EOF
